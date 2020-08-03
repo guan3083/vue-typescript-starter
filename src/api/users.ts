@@ -4,12 +4,19 @@ export const getUserInfo = (params: any) =>
 	request({
 		url: '/user/info',
 		method: 'get',
-        params
+		params
 	})
 
 export const login = (data: any) =>
-    request({
+	request({
 		url: '/login',
+		method: 'post',
+		data
+	})
+
+export const register = (data: any) =>
+	request({
+		url: '/register',
 		method: 'post',
 		data
 	})

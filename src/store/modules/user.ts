@@ -1,5 +1,5 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { login, logout, getUserInfo } from '@/api/users'
+import { login, logout, getUserInfo, register } from '@/api/users'
 import { getToken, setToken, removeToken } from '@/utils/cookies'
 import store from '@/store'
 let Base64 = require('js-base64').Base64
@@ -49,8 +49,18 @@ class User extends VuexModule implements IUserState {
 	public async Login(userInfo: { username: string; password: string }) {
 		let { username, password } = userInfo
 		let user_name = username.trim()
-        password = Base64.encode(password)
+		password = Base64.encode(password)
 		const { data } = await login({ user_name, password })
+		setToken(data)
+		this.SET_TOKEN(data)
+	}
+
+	@Action
+	public async Register(userInfo: { username: string; password: string }) {
+		let { username, password } = userInfo
+		let user_name = username.trim()
+		password = Base64.encode(password)
+		const { data } = await register({ user_name, password })
 		setToken(data)
 		this.SET_TOKEN(data)
 	}
@@ -73,7 +83,12 @@ class User extends VuexModule implements IUserState {
 		if (!data) {
 			throw Error('Verification failed, please Login again.')
 		}
-		const { roles, name, avatar, introduction } = {roles: ['admin'], name: data.user_name, avatar: 'avatar', introduction: 'ini'}
+		const { roles, name, avatar, introduction } = {
+			roles: ['admin'],
+			name: data.user_name,
+			avatar: 'avatar',
+			introduction: 'ini'
+		}
 		// roles must be a non-empty array
 		if (!roles || roles.length <= 0) {
 			throw Error('GetUserInfo: roles must be a non-null array!')

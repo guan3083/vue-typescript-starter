@@ -1,5 +1,6 @@
 <template>
 	<div :class="classObj" class="app-wrapper">
+		<web-socket></web-socket>
 		<div v-if="classObj.mobile && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
 		<sidebar class="sidebar-container" />
 		<div class="main-container">
@@ -15,13 +16,15 @@ import { mixins } from 'vue-class-component'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import { AppMain, Navbar, Sidebar } from './components'
 import ResizeMixin from './mixin/resize'
+import WebSocket from '@/components/WebSocket'
 
 @Component({
 	name: 'Layout',
 	components: {
 		AppMain,
 		Navbar,
-		Sidebar
+		Sidebar,
+		WebSocket
 	}
 })
 export default class extends mixins(ResizeMixin) {

@@ -46,22 +46,14 @@
 					<svg-icon :name="passwordType === 'password' ? 'eye-off' : 'eye-on'" />
 				</span>
 			</el-form-item>
-
-			<el-button
-				:loading="loading"
-				type="primary"
-				style="width: 100%; margin-bottom: 30px;"
-				@click.native.prevent="handleLogin"
-			>
-				Sign in
-			</el-button>
-
-			<div style="position: relative;">
-				<div class="tips">
-					<span> username: admin </span>
-					<span> password: any </span>
-				</div>
-			</div>
+			<el-row>
+				<el-button type="primary" class="sign-btn" @click.native.prevent="handleLogin">
+					Sign in
+				</el-button>
+				<el-button type="primary" class="sign-btn" @click.native.prevent="handleRegister">
+					Sign up
+				</el-button>
+			</el-row>
 		</el-form>
 	</div>
 </template>
@@ -80,14 +72,14 @@ import { isValidUsername } from '@/utils/validate'
 export default class extends Vue {
 	private validateUsername = (rule: any, value: string, callback: Function) => {
 		if (!isValidUsername(value)) {
-			callback(new Error('Please enter the correct user name'))
+			callback(new Error('4-12位英文'))
 		} else {
 			callback()
 		}
 	}
 	private validatePassword = (rule: any, value: string, callback: Function) => {
 		if (value.length < 6) {
-			callback(new Error('The password can not be less than 6 digits'))
+			callback(new Error('长度大于6位'))
 		} else {
 			callback()
 		}
@@ -139,16 +131,25 @@ export default class extends Vue {
 	private handleLogin() {
 		(this.$refs.loginForm as ElForm).validate(async(valid: boolean) => {
 			if (valid) {
-				this.loading = true
 				await UserModule.Login(this.loginForm)
 				this.$router.push({
 					path: this.redirect || '/',
 					query: this.otherQuery
 				})
-				// Just to simulate the time of the request
-				setTimeout(() => {
-					this.loading = false
-				}, 0.5 * 1000)
+			} else {
+				return false
+			}
+		})
+	}
+
+	private handleRegister() {
+		(this.$refs.loginForm as ElForm).validate(async(valid: boolean) => {
+			if (valid) {
+				await UserModule.Register(this.loginForm)
+				this.$router.push({
+					path: this.redirect || '/',
+					query: this.otherQuery
+				})
 			} else {
 				return false
 			}
@@ -267,6 +268,11 @@ export default class extends Vue {
 		color: $darkGray;
 		cursor: pointer;
 		user-select: none;
+	}
+
+	.sign-btn {
+		width: 48%;
+		margin-bottom: 30px;
 	}
 }
 </style>

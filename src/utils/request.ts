@@ -9,21 +9,21 @@ const service = axios.create({
 
 // Request interceptors
 service.interceptors.request.use(
-	(config) => {
+	config => {
 		// Add X-Access-Token header to every request, you can add other custom headers here
 		if (UserModule.token) {
 			config.headers['token'] = UserModule.token
 		}
 		return config
 	},
-	(error) => {
+	error => {
 		Promise.reject(error)
 	}
 )
 
 // Response interceptors
 service.interceptors.response.use(
-	(response) => {
+	response => {
 		// Some example codes here:
 		// code == 20000: success
 		// code == 50001: invalid access token
@@ -34,12 +34,13 @@ service.interceptors.response.use(
 		// You can change this part for your own usage.
 		const res = response.data
 		if (res.code !== 200) {
-			Message({
-				message: res.msg || 'Error',
-				type: 'error',
-				duration: 5 * 1000
-			})
-			if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+			if (res.code === 500) {
+				Message({
+					message: res.msg || 'Error',
+					type: 'error',
+					duration: 5 * 1000
+				})
+			} else if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
 				MessageBox.confirm('You have been logged out, try to login again.', 'Log out', {
 					confirmButtonText: 'Relogin',
 					cancelButtonText: 'Cancel',
@@ -48,13 +49,19 @@ service.interceptors.response.use(
 					UserModule.ResetToken()
 					location.reload() // To prevent bugs from vue-router
 				})
+			} else if (res.code === 501) {
+				Message({
+					message: res.errMsg || 'Error',
+					type: 'error',
+					duration: 5 * 1000
+				})
 			}
 			return Promise.reject(new Error(res.message || 'Error'))
 		} else {
 			return response.data
 		}
 	},
-	(error) => {
+	error => {
 		Message({
 			message: error.message,
 			type: 'error',

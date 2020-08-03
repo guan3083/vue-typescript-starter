@@ -92,6 +92,41 @@ export default new Router({
 			]
 		},
 		{
+			path: '/article',
+			component: Layout,
+			meta: {
+				title: 'Article',
+				icon: 'example'
+			},
+			redirect: '/article/index',
+			children: [
+				{
+					path: 'index',
+					component: () => import(/* webpackChunkName: "form" */ '@/views/article/index.vue'),
+					meta: {
+						title: 'Article',
+						icon: 'form'
+					}
+				},
+				{
+					path: 'editor',
+					component: () => import(/* webpackChunkName: "form" */ '@/views/editor/index.vue'),
+					meta: {
+						title: 'Editor',
+						icon: 'form'
+					}
+				},
+				{
+					path: 'websocket',
+					component: () => import(/* webpackChunkName: "form" */ '@/views/websocket/index.vue'),
+					meta: {
+						title: 'Websocket',
+						icon: 'form'
+					}
+				}
+			]
+		},
+		{
 			path: '/nested',
 			component: Layout,
 			redirect: '/nested/menu1',
