@@ -80,12 +80,25 @@ export default new Router({
 		{
 			path: '/form',
 			component: Layout,
+			meta: {
+				title: 'Form',
+				icon: 'form'
+			},
+			redirect: '/form/shoes',
 			children: [
 				{
 					path: 'index',
 					component: () => import(/* webpackChunkName: "form" */ '@/views/form/index.vue'),
 					meta: {
 						title: 'Form',
+						icon: 'form'
+					}
+				},
+				{
+					path: 'shoes',
+					component: () => import(/* webpackChunkName: "form" */ '@/views/shoes/index.vue'),
+					meta: {
+						title: 'Shoes',
 						icon: 'form'
 					}
 				}
